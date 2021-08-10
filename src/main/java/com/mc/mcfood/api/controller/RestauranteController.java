@@ -30,7 +30,8 @@ import com.mc.mcfood.domain.service.RestauranteService;
 public class RestauranteController {
 	
 	@Autowired
-	private RestauranteRepository repository;
+	private RestauranteRepository repository;	
+	
 	
 	@Autowired
 	private RestauranteService service;
@@ -49,6 +50,11 @@ public class RestauranteController {
 		}
 		
 		return ResponseEntity.notFound().build();
+	}
+	
+	@GetMapping("/por-nome")
+	public List<Restaurante> findByName(String nome, Long cozinhaId){
+		return repository.consultaPorNome(nome, cozinhaId);
 	}
 	
 	@PostMapping
@@ -73,7 +79,7 @@ public class RestauranteController {
 					.findById(id).orElse(null);
 			
 			if (restauranteAtual != null) {
-				BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
+				BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formaPagamento");
 				
 				restauranteAtual = service.salvar(restauranteAtual);
 				return ResponseEntity.ok(restauranteAtual);
